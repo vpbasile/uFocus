@@ -10,6 +10,6 @@ export default function Footer(props: { foregroundColor: string }) {
             <Button leftIcon={<LinkIcon />}><Link isExternal href="https://chakra-ui-cheatsheet.vercel.app/">Cheat Sheet</Link></Button>
             <Button leftIcon={<LinkIcon />}><Link isExternal href="https://play.chakra-ui.com/playground">Playground</Link></Button>
         </ButtonGroup>
-        <Text>ZZZ Blank Project</Text>
+        <Text>You, focus.</Text>
     </Box>)
 }

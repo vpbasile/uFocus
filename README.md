@@ -1,3 +1,3 @@
-# ZZZ React + TypeScript + Vite + ChakraUI
+# uFocus
 
-A blank project with all of that stuff
+You, focus.
