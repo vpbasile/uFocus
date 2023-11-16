@@ -1,15 +1,12 @@
-import {
-    List,
-    ListItem,
-    ListIcon,
-    Box, Heading, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Kbd
-} from '@chakra-ui/react'
-import { ChatIcon, CheckIcon, CopyIcon, DragHandleIcon } from '@chakra-ui/icons'
+import { Box, Heading, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Kbd, Button, ButtonGroup, Tr, Td, Table, Tbody, List, ListItem } from '@chakra-ui/react'
+import { ChatIcon, CheckIcon, ArrowDownIcon, ArrowUpIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { listCategory, task } from './task'
+import { useState } from 'react';
 // import { useState } from 'react';
 
 export default function TaskDisplay() {
 
+    const accentColor = 'blue.900';
 
     let numGen = 0;
     const originalList: [number, task][] = [
@@ -34,8 +31,8 @@ export default function TaskDisplay() {
         // [++numGen, { id: numGen, displayText: "", complete: true, category: 'completedToday' },],
     ]
 
-    const currentList = originalList
-    
+    const [currentList, updateList] = useState(originalList)
+
     const notesList = [
         <>When an element is made dragggable, you can no longer highlight the text within that element unless you hold down<Kbd>alt</Kbd>.</>,
         <>No detail panel - each task is a string and may have subtasks. </>,
@@ -49,53 +46,81 @@ export default function TaskDisplay() {
     function taskContents(relevantTasks: [number, task][]) {
         let whatToDisplay = []
         if (relevantTasks.length > 0) {
+            let taskCount = 0;
             whatToDisplay = relevantTasks.map(thisTask => {
                 const taskInfo = thisTask[1];
-                const thisIcon = taskInfo.complete ? CheckIcon : CopyIcon;
-                return <ListItem key={++numGen}
-                    p={2} borderBottom={'1px solid gray'}
-                    draggable 
-                    // onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop}
-                ><ListIcon as={DragHandleIcon} /><Icon as={thisIcon} m={2} />{taskInfo.displayText}</ListItem>;
+                const finishButton = taskInfo.complete ? <Button leftIcon={<CheckIcon />} /> : <Button leftIcon={<HamburgerIcon />} />;
+                const taskIndex = taskCount++;
+                const [isFirst, isLast] = [taskIndex === 0, taskIndex === relevantTasks.length];
+                const taskStyles = isLast ? { borderBottom: "2px solid " + accentColor, paddingBottom: 6 } : { borderBottom: '2px solid black' };
+                return <Tr key={taskIndex} sx={taskStyles}>
+                    <Td
+                        p={2} borderBottom={'1px solid gray'}>
+                        <ButtonGroup size='sm' isAttached>
+                            <Button>{taskInfo.id}/{taskIndex}</Button>
+                            <Button leftIcon={<ArrowUpIcon />} isDisabled={isFirst} onClick={() => rankUp(taskIndex)} />
+                            <Button leftIcon={<ArrowDownIcon />} isDisabled={isLast} onClick={() => rankDown(taskIndex)} />
+                            {finishButton}
+                        </ButtonGroup>
+                    </Td>
+                    <Td>{taskInfo.displayText}</Td>
+                </Tr>
             })
-        } else whatToDisplay = [<Box key={++numGen}>Empty</Box>]
-        return <List>{whatToDisplay}</List>;
+        } else whatToDisplay = [<Tr key={++numGen}><Td>Empty</Td></Tr>]
+        return <Tbody>{whatToDisplay}</Tbody>;
+    }
+
+    // <> Functions that handle ranking
+    function rankUp(taskID: number) {
+        const tempList = [...currentList]
+        const [thisTask, thatTask] = [tempList[taskID], tempList[taskID - 1]]
+        tempList[taskID] = thatTask; tempList[taskID - 1] = thisTask
+        updateList(tempList)
+    }
+
+    function rankDown(taskID: number) {
+        const tempList = [...currentList];
+        const [thisTask, thatTask] = [tempList[taskID], tempList[taskID + 1]]; // Swap with the next task
+        tempList[taskID] = thatTask;
+        tempList[taskID + 1] = thisTask; // Update the correct index
+        updateList(tempList);
     }
 
 
-// <> Main return
+
+    // <> Main return
 
 
-return (<>
-    <Box display={{ md: 'flex' }}>
-        <Box id='taskList' p={9} flex={1}>
-            <Heading as={'h2'}>Tasks</Heading>
-            {listCategory.map((eachCategory) => {
-                const relevantTasks = currentList.filter((eachTask) => { return (eachTask[1].category === eachCategory) })
-                return <Box key={++numGen}>
-                    <Accordion defaultIndex={[0]} allowMultiple>
-                        <AccordionItem>
-                            <AccordionButton rounded={'xl'} _expanded={{ bg: 'blue.900', color: 'white' }}>
-                                <Box as="span" flex='1' textAlign='left'>
-                                    {/* Make this a droppable area */}
-                                    <Heading as={'h3'}>{eachCategory}({relevantTasks.length})</Heading>
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-                            <AccordionPanel pb={4} >{taskContents(relevantTasks)}</AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
+    return (<>
+        <Box display={{ md: 'flex' }}>
+            <Box id='taskList' p={9} flex={1}>
+                <Heading as={'h2'}>Tasks</Heading>
+                {listCategory.map((eachCategory) => {
+                    const relevantTasks = currentList.filter((eachTask) => { return (eachTask[1].category === eachCategory) })
+                    return <Box key={++numGen}>
+                        <Accordion defaultIndex={[0]} allowMultiple>
+                            <AccordionItem>
+                                <AccordionButton rounded={'xl'} _expanded={{ bg: accentColor, color: 'white' }}>
+                                    <Box as="span" flex='1' textAlign='left'>
+                                        {/* Make this a droppable area */}
+                                        <Heading as={'h3'}>{eachCategory}({relevantTasks.length})</Heading>
+                                    </Box>
+                                    <AccordionIcon />
+                                </AccordionButton>
+                                <AccordionPanel pb={4} ><Table>{taskContents(relevantTasks)}</Table></AccordionPanel>
+                            </AccordionItem>
+                        </Accordion>
 
-                </Box>
-            }
-            )}
+                    </Box>
+                }
+                )}
+            </Box>
+            <Box id='no' p={9} flex={1}>
+                <Heading as={'h2'}>Notes</Heading>
+                <List spacing={3} stylePosition={'inside'}>{notesList.map(eachNote => <ListItem key={++numGen}><Icon as={ChatIcon} /> {eachNote}</ListItem>)}</List>
+            </Box>
         </Box>
-        <Box id='no' p={9} flex={1}>
-            <Heading as={'h2'}>Notes</Heading>
-            <List spacing={3} stylePosition={'inside'}>{notesList.map(eachNote => <ListItem key={++numGen}><Icon as={ChatIcon} /> {eachNote}</ListItem>)}</List>
-        </Box>
-    </Box>
-</>)
+    </>)
 
 
 }
