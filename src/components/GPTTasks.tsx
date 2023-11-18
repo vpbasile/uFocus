@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Box, Heading, List, ListItem, Button, ButtonGroup, Tbody, Td, Tr, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Table, Kbd, Input, RadioGroup, Radio } from '@chakra-ui/react';
+import { Box, Heading, List, ListItem, Button, Tbody, Td, Tr, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Table, Kbd, Input, RadioGroup, Radio } from '@chakra-ui/react';
 import { category, listCategory, task } from './task';
-import { CheckIcon, HamburgerIcon, ArrowUpIcon, ArrowDownIcon, ChatIcon } from '@chakra-ui/icons';
+import { ChatIcon } from '@chakra-ui/icons';
 import { nanoid } from 'nanoid';
+import SectionContents from './sectionContents';
 
 export default function GPTTasks() {
     const accentColor = 'blue.900';
@@ -17,18 +18,18 @@ export default function GPTTasks() {
     ]
 
     const initialTasks: task[] = [
-        { id: nanoid(), displayText: "Render recursive tasks.", complete: false, category: "focus" },
-        { id: nanoid(), displayText: "Add a 'Focus now' button that collapses everything except the focus list.", complete: false, category: "focus" },
-        { id: nanoid(), displayText: "Add a 'Generate daily accomplishments' button that will output a string that will list everything you did that day then move everything from 'completed today' to 'complete'.", complete: false, category: "next" },
-        { id: nanoid(), displayText: "Integrate the RTM API", complete: false, category: "next" },
-        { id: nanoid(), displayText: "Handle state storage", complete: false, category: "next" },
-        { id: nanoid(), displayText: "Add a 'Plan' button.", complete: false, category: "next" },
-        { id: nanoid(), displayText: "Handle an empty list", complete: false, category: "next" },
-        { id: nanoid(), displayText: "[Emailed Sue] When is the event?", complete: false, category: "waiting" },
-        { id: nanoid(), displayText: "[Preethi will be back on Tuesday] What's the plan?", complete: false, category: "waiting" },
-        { id: nanoid(), displayText: "Create an accordion for each category.", complete: true, category: 'completedToday' },
-        { id: nanoid(), displayText: "This was another task, though it was surprisingly long for what you'd expect for the text of a task.", complete: true, category: 'completedToday' },
-        { id: nanoid(), displayText: "Example task", complete: true, category: 'completedToday' },
+        { id: nanoid(), displayText: "Render recursive tasks.", status: 'inProgress', category: "focus" },
+        { id: nanoid(), displayText: "Add a 'Focus now' button that collapses everything except the focus list.", status: 'inProgress', category: "focus" },
+        { id: nanoid(), displayText: "Add a 'Generate daily accomplishments' button that will output a string that will list everything you did that day then move everything from 'completed today' to 'complete'.", status: 'inProgress', category: "next" },
+        { id: nanoid(), displayText: "Integrate the RTM API", status: 'inProgress', category: "next" },
+        { id: nanoid(), displayText: "Handle state storage", status: 'inProgress', category: "next" },
+        { id: nanoid(), displayText: "Add a 'Plan' button.", status: 'inProgress', category: "next" },
+        { id: nanoid(), displayText: "Handle an empty list", status: 'inProgress', category: "next" },
+        { id: nanoid(), displayText: "[Emailed Sue] When is the event?", status: 'waiting', category: "next" },
+        { id: nanoid(), displayText: "[Preethi will be back on Tuesday] What's the plan?", status: 'waiting', category: "next" },
+        { id: nanoid(), displayText: "Create an accordion for each category.", status: 'complete', category: 'completedToday' },
+        { id: nanoid(), displayText: "This was another task, though it was surprisingly long for what you'd expect for the text of a task.", status: 'complete', category: 'completedToday' },
+        { id: nanoid(), displayText: "Example task", status: 'complete', category: 'completedToday' },
 
     ];
 
@@ -36,7 +37,7 @@ export default function GPTTasks() {
 
     // Group tasks by category
     const groupedTasks = new Map<category, task[]>((listCategory.map((eachCategory) => { return [eachCategory, tasksOfCategory(eachCategory)]; })))
-    const [tasks, setTasks] = useState(groupedTasks);
+    const [taskState, setTasks] = useState(groupedTasks);
 
     const [tempText, SETtempText] = useState("Text of the new task");
     const [tempCategory, SETtempCategory] = useState(listCategory[0]);
@@ -46,12 +47,12 @@ export default function GPTTasks() {
         const newTask: task = {
             id: nanoid(),
             displayText: tempText,
-            complete: false,
+            status: 'inProgress',
             category: tempCategory,
         };
 
         // Updating the state to include the new task
-        const updatedTasks = new Map(tasks);
+        const updatedTasks = new Map(taskState);
         const categoryTasks = updatedTasks.get(tempCategory) || [];
         updatedTasks.set(tempCategory, [...categoryTasks, newTask]);
         setTasks(updatedTasks);
@@ -61,63 +62,38 @@ export default function GPTTasks() {
         SETtempCategory(listCategory[0]);
     };
 
-    // <> Functions that handle rendering
-    function taskContents(relevantTasks: task[]) {
-        let indexGen = 0;
-        let whatToDisplay = []
-        if (relevantTasks.length > 0) {
-            // let taskCount = 0;
-            whatToDisplay = relevantTasks.map(thisTask => {
-                const finishButton = thisTask.complete ? <Button leftIcon={<CheckIcon />} /> : <Button leftIcon={<HamburgerIcon />} />;
-                const taskID = thisTask.id;
-                const taskRank = ++indexGen;
-                // const taskStyles = isLast ? { borderBottom: "2px solid " + accentColor, paddingBottom: 6 } : { borderBottom: '2px solid black' };
-                return <Tr key={taskID} >
-                    <Td
-                        p={2} borderBottom={'1px solid gray'}>
-                        <ButtonGroup size='sm' isAttached>
-                            <Button>{taskRank}</Button>
-                            <Button leftIcon={<ArrowUpIcon />} onClick={() => rankDown(thisTask.category, taskRank)} isDisabled={taskRank === 1} />
-                            <Button leftIcon={<ArrowDownIcon />} onClick={() => rankUp(thisTask.category, taskRank)} isDisabled={taskRank === relevantTasks.length} />
-                            {finishButton}
-                        </ButtonGroup>
-                    </Td>
-                    <Td>{thisTask.displayText}</Td>
-                </Tr>
-            })
-        } else whatToDisplay = [<Tr key={nanoid()}><Td>Empty</Td></Tr>]
-        return <Tbody>{whatToDisplay}</Tbody>;
-    }
-
     // <> Functions that handle ranking
-    function rankUp(categoryKey: category, taskRank: number) {
-        setTasks(prevTasks => {
-            const categoryTasks = [...prevTasks.get(categoryKey) || []];
-            if (taskRank > 0) {
-                const [movedTask] = categoryTasks.splice(taskRank, 1);
-                categoryTasks.splice(taskRank - 1, 0, movedTask);
-            }
-            return new Map([...prevTasks, [categoryKey, categoryTasks]]);
-        });
+    function rankUp(taskRank: number, categoryKey: category): void {
+        if (taskRank > 1) {
+            const oldList = new Map(taskState);
+            const oldPart = oldList.get(categoryKey) as task[]
+            const [movedTask] = oldPart.splice(taskRank - 1, 1); // Pull out the task we're moving
+            oldPart.splice(taskRank - 2, 0, movedTask);
+            setTasks(oldList.set(categoryKey, oldPart));
+        }
     }
 
-    function rankDown(categoryKey: category, taskRank: number) {
-        setTasks(prevTasks => {
-            const categoryTasks = [...prevTasks.get(categoryKey) || []];
-            if (taskRank < categoryTasks.length - 1) {
-                const [movedTask] = categoryTasks.splice(taskRank, 1);
-                categoryTasks.splice(taskRank + 1, 0, movedTask);
-            }
-            return new Map([...prevTasks, [categoryKey, categoryTasks]]);
-        });
+    function rankDown(taskRank: number, categoryKey: category): void {
+        const oldList = new Map(taskState);
+        const oldPart = oldList.get(categoryKey) as task[];
+
+        if (taskRank < oldPart.length) {
+            const [movedTask] = oldPart.splice(taskRank - 1, 1); // Pull out the task we're moving
+            oldPart.splice(taskRank, 0, movedTask);
+            setTasks(oldList.set(categoryKey, oldPart));
+        }
     }
 
+
+    // <> Functions that handle rendering
+
+    let keyGen = 0;
 
     return (<>
         <Box display={{ md: 'flex' }}>
             <Box id='taskList' p={9} flex={1}>
                 <Heading as={'h2'}>Tasks</Heading>
-                <Box key={nanoid()}>
+                <Box key={++keyGen}>
                     <Accordion defaultIndex={[0]} allowMultiple>
                         <AccordionItem>
                             <AccordionButton rounded={'xl'} _expanded={accented}>
@@ -156,7 +132,7 @@ export default function GPTTasks() {
 
                 </Box>
                 {listCategory.map((eachCategory) => {
-                    const relevantTasks: task[] = tasks.get(eachCategory) as task[]
+                    const relevantTasks: task[] = taskState.get(eachCategory) as task[]
                     return <Box key={nanoid()}>
                         <Accordion defaultIndex={[0]} allowMultiple>
                             <AccordionItem>
@@ -167,7 +143,7 @@ export default function GPTTasks() {
                                     </Box>
                                     <AccordionIcon />
                                 </AccordionButton>
-                                <AccordionPanel pb={4} ><Table>{taskContents(relevantTasks)}</Table></AccordionPanel>
+                                <AccordionPanel pb={4} ><SectionContents relevantTasks={relevantTasks} rankUp={rankUp} rankDown={rankDown} /></AccordionPanel>
                             </AccordionItem>
                         </Accordion>
 

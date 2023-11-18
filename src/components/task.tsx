@@ -2,13 +2,25 @@
 enum Category {
   focus = 'focus',
   next = 'next',
-  waiting = 'waiting',
   completedToday = 'completedToday',
   // Add more categories as needed
+}
+
+enum Status {
+  inProgress = 'inProgress',
+  waiting = 'waiting',
+  complete = 'complete',
 }
 
 // Export the 'category' enum for use in other files
 export type category = keyof typeof Category;
 export const listCategory: category[] = Object.keys(Category) as category[];
+// Do the same for status
+export type status = keyof typeof Status;
+export const listStatus: status[] = Object.keys(Status) as status[];
 
-export type task = { id: string, displayText: string, url?: URL, complete: boolean, subtasks?: task[], category: category }
+export type task = {
+  id: string, displayText: string, url?: URL, status: status, subtasks?: task[], category: category
+}
+
+export type groupedList = Map<category, task[]>;
