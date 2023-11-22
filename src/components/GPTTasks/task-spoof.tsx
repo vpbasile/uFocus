@@ -6,6 +6,7 @@ import { category, listCategory, task } from './task';
 
 
 export const initialTasks: task[] = [
+    { id: nanoid(), displayText: "Implement react router", status: 'inProgress', category: "focus" },
     { id: nanoid(), displayText: "Render recursive tasks.", status: 'waiting', category: "focus" },
     { id: nanoid(), displayText: "Handle state storage", status: 'complete', category: "focus" },
     { id: nanoid(), displayText: "Add a 'Focus now' button that collapses everything except the focus list.", status: 'inProgress', category: "focus" },

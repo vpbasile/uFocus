@@ -1,4 +1,4 @@
-// SectionContents.tsx
+// TaskTable.tsx
 
 import { Tr, Td, Tbody, Table, useColorModeValue } from "@chakra-ui/react";
 import { status, task, category } from "./task";
@@ -6,9 +6,10 @@ import { Dispatch } from "react";
 import { Action } from "./todoSlice";
 import DisplayTask from "./displayTask";
 
+
 export type dispatchFunction = (category: category, rank: number) => void
 
-export default function SectionContents(props: { relevantTasks: task[], dispatch: Dispatch<Action> }) {
+export default function TaskTable(props: { relevantTasks: task[], dispatch: Dispatch<Action> }) {
     // ---------------------------------------------
     // <><> Cache props
     // ---------------------------------------------
