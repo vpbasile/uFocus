@@ -7,8 +7,7 @@ import { nanoid } from 'nanoid';
 import TaskTable from './TaskTable';
 import { groupedTasks, notesList } from './task-spoof';
 import { useReducer, useState } from 'react';
-import taskReducer, { Action, store } from './todoSlice';
-import { Provider } from 'react-redux';
+import taskReducer, { Action } from './todoSlice';
 
 
 export default function GroupedCategory() {
@@ -41,7 +40,7 @@ export default function GroupedCategory() {
     // ---------------------------------------------
     // <><> Functions that handle rendering
     // ---------------------------------------------
-    return (<Provider store={store}>
+    return (<>
         <Box display={{ md: 'flex' }}>
             <Box id='taskList' p={9} flex={1}>
                 <Heading as={'h2'} sx={collapsedStyle}>/grouped by category</Heading>
@@ -104,5 +103,5 @@ export default function GroupedCategory() {
                 </Accordion>
             </Box>
         </Box >
-    </Provider >);
+    </ >);
 }

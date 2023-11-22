@@ -1,5 +1,5 @@
 import { Flex, Heading, Link } from "@chakra-ui/react";
-import ColorModeButton from "./helpers/colorModeButton";
+import ColorModeButton from "./colorModeButton";
 // import { useState } from "react";
 
 export type routeType = {

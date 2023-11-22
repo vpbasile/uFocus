@@ -4,7 +4,7 @@ import { Tr, Td, Tbody, Table, useColorModeValue } from "@chakra-ui/react";
 import { status, task, category } from "./task";
 import { Dispatch } from "react";
 import { Action } from "./todoSlice";
-import DisplayTask from "./displayTask";
+import DisplayTask from "./DisplayTask";
 
 
 export type dispatchFunction = (category: category, rank: number) => void
