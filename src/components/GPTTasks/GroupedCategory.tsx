@@ -1,0 +1,105 @@
+// GPTTasks.tsx
+
+import { Box, Heading, List, ListItem, Button, Tbody, Td, Tr, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Table, Input, RadioGroup, Radio } from '@chakra-ui/react';
+import { category, listCategory, stateType, task } from './task';
+import { ChatIcon } from '@chakra-ui/icons';
+import { nanoid } from 'nanoid';
+import SectionContents from './sectionContents';
+import { groupedTasks, notesList } from './task-spoof';
+import { useReducer, useState } from 'react';
+import taskReducer, { Action, store } from './todoSlice';
+import { Provider } from 'react-redux';
+
+
+export default function GroupedCategory() {
+    // ---------------------------------------------
+    // <><> Style constants
+    // ---------------------------------------------
+    const accentColor = 'blue.900';
+    const accented = { bg: accentColor, color: 'white' };
+
+    // ---------------------------------------------
+    // <><> States
+    // ---------------------------------------------
+    const [taskState, dispatch] = useReducer<(state: stateType, action: Action) => stateType, stateType>(taskReducer, groupedTasks, (groupedTasks) => groupedTasks);
+
+    const [tempText, SETtempText] = useState("Text of the new task");
+    const [tempCategory, SETtempCategory] = useState(listCategory[0]);
+
+    // ---------------------------------------------
+    // <><> Actions
+    // ---------------------------------------------
+    // Function to dispatch the RANK_UP action
+    function handleAddNew(category: category, displayText: string) {
+        dispatch({ type: 'ADD_TASK', payload: { category: category, displayText: displayText } })
+        // // Resetting the input fields
+        SETtempText("Text of the new task");
+        SETtempCategory(listCategory[0]);
+    }
+
+    // ---------------------------------------------
+    // <><> Functions that handle rendering
+    // ---------------------------------------------
+    return (<Provider store={store}>
+        <Box display={{ md: 'flex' }}>
+            <Box id='taskList' p={9} flex={1}>
+                <Heading as={'h2'}>Tasks</Heading>
+                <Accordion defaultIndex={[1]}>
+                    <AccordionItem id='newTaskForm'>
+                        <AccordionButton rounded={'xl'} _expanded={accented}>
+                            <Box as="span" flex='1' textAlign='left'>
+                                <Heading as={'h3'}>Create task</Heading>
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                        <AccordionPanel pb={4} ><Table>
+                            <Tbody><Tr>
+                                <Td id='createForm' mb={4}>
+                                    <Input
+                                        placeholder="Task text"
+                                        mr={2}
+                                        onChange={(e) => SETtempText(e.target.value)}
+                                        defaultValue={tempText}
+                                    />
+                                    <RadioGroup
+                                        value={tempCategory}
+                                        onChange={(e: category) => { SETtempCategory(e) }}
+                                    // ChatpGPT help me out here, please
+                                    >
+                                        {listCategory.map(thisCat => <Radio key={thisCat} value={thisCat}>{thisCat}</Radio>)}
+                                        {/* Add more categories as needed */}
+                                    </RadioGroup>
+                                    <Button ml={2} onClick={() => { handleAddNew(tempCategory, tempText) }}>
+                                        Add Task
+                                    </Button>
+                                </Td>
+                            </Tr></Tbody>
+
+                        </Table></AccordionPanel>
+                    </AccordionItem>
+                    {listCategory.map((eachCategory) => {
+                        const relevantTasks: task[] = taskState.get(eachCategory) as task[]
+                        return <AccordionItem key={`${eachCategory}`}>
+                            <AccordionButton rounded={'xl'} _expanded={accented}>
+                                <Box as="span" flex='1' textAlign='left'>
+                                    <Heading as={'h3'}>{eachCategory}({relevantTasks.length})</Heading>
+                                </Box>
+                                <AccordionIcon />
+                            </AccordionButton>
+                            <AccordionPanel pb={4}><SectionContents relevantTasks={relevantTasks}
+                                dispatch={dispatch} /></AccordionPanel>
+                        </AccordionItem>
+                    })}
+                    <AccordionItem>
+                        <AccordionButton>
+                            <Heading as={'h2'}>Notes</Heading>
+                        </AccordionButton>
+                        <AccordionPanel>
+                            <List spacing={3} stylePosition={'inside'}>{notesList.map(eachNote => <ListItem key={nanoid()}><Icon as={ChatIcon} /> {eachNote}</ListItem>)}</List>
+                            <AccordionIcon /></AccordionPanel>
+                    </AccordionItem>
+                </Accordion>
+            </Box>
+        </Box >
+    </Provider >);
+}

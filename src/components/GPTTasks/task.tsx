@@ -1,3 +1,6 @@
+import { Dispatch } from "react";
+import { Action } from "./todoSlice";
+
 // Define the 'category' enum
 enum Category {
   focus = 'focus',
@@ -23,4 +26,5 @@ export type task = {
   id: string, displayText: string, url?: URL, status: status, subtasks?: task[], category: category
 }
 
-export type groupedList = Map<category, task[]>;
+export type stateType = Map<category, task[]>
+export type dispatchType = Dispatch<Action>
