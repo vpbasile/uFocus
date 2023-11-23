@@ -44,7 +44,7 @@ export default function GroupedCategory() {
         <Box display={{ md: 'flex' }}>
             <Box id='taskList' p={9} flex={1}>
                 <Heading as={'h2'} sx={collapsedStyle}>/grouped by category</Heading>
-                <Accordion defaultIndex={[1]}>
+                <Accordion defaultIndex={[0]}>
                     {listCategory.map((eachCategory) => {
                         const relevantTasks: task[] = taskState.get(eachCategory) as task[]
                         return <AccordionItem key={`${eachCategory}`}>
@@ -56,7 +56,7 @@ export default function GroupedCategory() {
                                 </Box>
                                 <AccordionIcon />
                             </AccordionButton>
-                            <AccordionPanel pb={4}><TaskTable relevantTasks={relevantTasks}
+                            <AccordionPanel pb={4}><TaskTable category={eachCategory} relevantTasks={relevantTasks}
                                 dispatch={dispatch} /></AccordionPanel>
                         </AccordionItem>
                     })}

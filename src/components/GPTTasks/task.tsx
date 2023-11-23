@@ -4,7 +4,7 @@ import { Action } from "./todoSlice";
 // Define the 'category' enum
 enum Category {
   focus = 'focus',
-  next = 'next',
+  then = 'then',
   completedToday = 'completedToday',
   // Add more categories as needed
 }
