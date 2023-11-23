@@ -4,12 +4,12 @@ import { Tr, Td, Tbody, Table, useColorModeValue } from "@chakra-ui/react";
 import { status, task, category } from "./task";
 import { Dispatch } from "react";
 import { Action } from "./todoSlice";
-import DisplayTask from "./DisplayTask";
+import TaskTableRow from "./TaskTableRow";
 
 
 export type dispatchFunction = (category: category, rank: number) => void
 
-export default function TaskTable(props: { relevantTasks: task[], dispatch: Dispatch<Action> }) {
+export default function TaskTable(props: { category:category; relevantTasks: task[], dispatch: Dispatch<Action> }) {
     // ---------------------------------------------
     // <><> Cache props
     // ---------------------------------------------
@@ -34,8 +34,8 @@ export default function TaskTable(props: { relevantTasks: task[], dispatch: Disp
     // ---------------------------------------------
     return <Table><Tbody>
         {relevantTasks ? relevantTasks.map((thisTask, taskRank) => {
-            return <DisplayTask task={thisTask} taskRank={taskRank} taskStyle={taskStyle(thisTask.status)}
+            return <TaskTableRow key={`${props.category}_${thisTask.id}`} task={thisTask} taskRank={taskRank} taskStyle={taskStyle(thisTask.status)}
                 isFirst={taskRank === 0} isLast={taskRank === relevantTasks.length - 1} dispatch={dispatch} />
-        }) : <Tr key={'emptySection'}><Td>Empty</Td></Tr>}
+        }) : <Tr key={'row_emptySection'}><Td>Empty</Td></Tr>}
     </Tbody></Table>
 }

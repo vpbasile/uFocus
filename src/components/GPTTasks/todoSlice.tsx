@@ -37,15 +37,19 @@ export default function taskReducer(taskState: stateType = groupedTasks, action:
         case 'RANK_UP': {
             const { category, rank } = action.payload as payloadType;
             if (rank > 0) {
+                // Isolate the category we're updating
                 const categoryTasks = taskState.get(category) as task[];
+                const copyCategoryTasks = [...categoryTasks];
                 // Pull out the task we're moving
-                const [taskToMove] = categoryTasks.splice(rank, 1);
+                const taskToMove = copyCategoryTasks[rank];
+                // Remove the task from its current position
+                copyCategoryTasks.splice(rank, 1);
                 // Insert the task at the new position
-                categoryTasks.splice(rank - 1, 0, taskToMove);
+                copyCategoryTasks.splice(rank - 1, 0, taskToMove);
                 // Create a new Map to ensure immutability
-                const tempState = new Map(taskState);
-                tempState.set(category, categoryTasks);
-                return tempState;
+                const newState = new Map(taskState);
+                newState.set(category, copyCategoryTasks);
+                return newState;
             } else {
                 // No change needed if rank is less than or equal to 1
                 return taskState;
@@ -53,17 +57,21 @@ export default function taskReducer(taskState: stateType = groupedTasks, action:
         }
         case 'RANK_DN': {
             const { category, rank } = action.payload as payloadType;
-            const length = taskState.size;
+            const categoryTasks = taskState.get(category) as task[]
+            const length = categoryTasks.length;
             if (rank < length) {
-                const categoryTasks = taskState.get(category) as task[]
-                const [movedTask] = categoryTasks.splice(rank, 1); // Pull out the task we're moving
-                categoryTasks.splice(rank + 1, 0, movedTask);
-
+                // Isolate the category we're updating
+                const copyCategoryTasks = [...categoryTasks];
+                // Pull out the task we're moving
+                const taskToMove = categoryTasks[rank]
+                // Remove the task from its current position
+                copyCategoryTasks.splice(rank, 1);
+                // Insert the task at the new position
+                copyCategoryTasks.splice(rank + 1, 0, taskToMove);
                 // Create a new Map to ensure immutability
-                const newLocal = new Map(taskState);
-                newLocal.set(category, categoryTasks);
-
-                return newLocal;
+                const newState = new Map(taskState);
+                newState.set(category, copyCategoryTasks);
+                return newState;
             } else return taskState;
         }
         case 'UPDATE_STATUS': {

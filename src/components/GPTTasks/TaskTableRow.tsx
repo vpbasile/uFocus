@@ -4,7 +4,7 @@ import { task } from "./task";
 import { Action } from "./todoSlice";
 import { Dispatch } from "react";
 
-export default function DisplayTask(props: { task: task, taskRank: number, taskStyle: SystemStyleObject, isFirst: boolean, isLast: boolean, dispatch: Dispatch<Action> }) {
+export default function TaskTableRow(props: { task: task, taskRank: number, taskStyle: SystemStyleObject, isFirst: boolean, isLast: boolean, dispatch: Dispatch<Action> }) {
     const task = props.task;
     const { category, status, id } = task
 
@@ -29,7 +29,7 @@ export default function DisplayTask(props: { task: task, taskRank: number, taskS
         }
     }
 
-    return <Tr key={id} sx={taskStyle}>
+    return <Tr key={`${category}_${id}`} sx={taskStyle}>
         <Td p={2} id={'task_' + id} className="taskButtons">
             <ButtonGroup size='sm' isAttached>
                 <Button leftIcon={<ArrowUpIcon />} onClick={rankUp} isDisabled={props.isFirst} sx={taskStyle} />
