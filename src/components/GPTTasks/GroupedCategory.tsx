@@ -1,11 +1,9 @@
 // GPTTasks.tsx
 
-import { Box, Heading, List, ListItem, Button, Tbody, Td, Tr, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Icon, Table, Input, RadioGroup, Radio, useColorModeValue } from '@chakra-ui/react';
+import { Box, Heading, Button, Tbody, Td, Tr, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Table, Input, RadioGroup, Radio, useColorModeValue } from '@chakra-ui/react';
 import { category, listCategory, stateType, task } from './task';
-import { ChatIcon } from '@chakra-ui/icons';
-import { nanoid } from 'nanoid';
 import TaskTable from './TaskTable';
-import { groupedTasks, notesList } from './task-spoof';
+import { groupedTasks } from './task-spoof';
 import { useReducer, useState } from 'react';
 import taskReducer, { Action } from './todoSlice';
 
@@ -91,14 +89,6 @@ export default function GroupedCategory() {
                             </Tr></Tbody>
 
                         </Table></AccordionPanel>
-                    </AccordionItem>
-                    <AccordionItem>
-                        <AccordionButton sx={collapsedStyle} _expanded={expandedStyle}>
-                            <Heading as={'h2'}>Notes</Heading>
-                        </AccordionButton>
-                        <AccordionPanel>
-                            <List spacing={3} stylePosition={'inside'}>{notesList.map(eachNote => <ListItem key={nanoid()}><Icon as={ChatIcon} /> {eachNote}</ListItem>)}</List>
-                            <AccordionIcon /></AccordionPanel>
                     </AccordionItem>
                 </Accordion>
             </Box>

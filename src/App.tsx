@@ -1,23 +1,25 @@
-import { Box, useColorModeValue } from '@chakra-ui/react'
-import SandboxHeader from './components/helpers/sandboxHeader'
-import SandboxFooter from './components/helpers/sandboxFooter'
-import GroupedCategory from './components/GPTTasks/GroupedCategory'
+import { Route, Routes } from 'react-router-dom'
+import Layout from './components/layout'
 import { Provider } from 'react-redux'
 import { store } from './components/GPTTasks/todoSlice'
+import GroupedCategory from './components/GPTTasks/GroupedCategory'
+import Notes from './components/Notes'
+import { myRouteDef } from './components/typeRoute'
 
 function App() {
-  const foreGroundColor = useColorModeValue('black', 'white')
-
+  const routesList: myRouteDef[] = [
+    { path: "/", displayTitle: "Grouped" },
+    { path: "notes", displayTitle: "Notes" }
+  ]
   return (
-    <>
-      <SandboxHeader foregroundColor={foreGroundColor} routes={[]} />
-      <Box id='mainBody'>
-        <Provider store={store}>
-          <GroupedCategory />
-        </Provider>
-      </Box>
-      <SandboxFooter foregroundColor={foreGroundColor} />
-    </>
+    <Provider store={store}>
+      <Routes>
+        <Route path='/' element={<Layout routesList={routesList} />}>
+          <Route index element={<GroupedCategory />} />
+          <Route path='notes' element={<Notes />} />
+        </Route>
+      </Routes >
+    </Provider>
   )
 }
 
