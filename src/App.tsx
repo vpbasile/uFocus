@@ -8,13 +8,13 @@ import { myRouteDef } from './components/typeRoute'
 
 function App() {
   const routesList: myRouteDef[] = [
-    { path: "/", displayTitle: "Grouped" },
+    { path: "/uFocus", displayTitle: "Grouped" },
     { path: "notes", displayTitle: "Notes" }
   ]
   return (
     <Provider store={store}>
       <Routes>
-        <Route path='/' element={<Layout routesList={routesList} />}>
+        <Route path='/uFocus/' element={<Layout routesList={routesList} />}>
           <Route index element={<GroupedCategory />} />
           <Route path='notes' element={<Notes />} />
         </Route>
