@@ -6,9 +6,11 @@ export default function Nav(props: { routesList: myRouteDef[] }) {
 
     const routesList = props.routesList
 
+    let keyGen = 0;
+
     return (<ButtonGroup isAttached p={5}>
         {routesList.map((route) => {
-            return <Button>
+            return <Button key={'navButton' + keyGen++}>
                 <Link to={route.path}>{route.displayTitle}</Link>
             </Button>
         })}

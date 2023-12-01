@@ -41,7 +41,7 @@ export default function GroupedCategory() {
     return (<>
         <Box display={{ md: 'flex' }}>
             <Box id='taskList' p={9} flex={1}>
-                <Heading as={'h2'} sx={collapsedStyle}>/grouped by category</Heading>
+                <Heading as={'h2'} sx={collapsedStyle}>view: grouped-category</Heading>
                 <Accordion defaultIndex={[0]}>
                     {listCategory.map((eachCategory) => {
                         const relevantTasks: task[] = taskState.get(eachCategory) as task[]

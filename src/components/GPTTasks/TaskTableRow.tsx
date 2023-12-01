@@ -23,20 +23,20 @@ export default function TaskTableRow(props: { task: task, taskRank: number, task
     const updateStatus = () => { dispatch({ type: 'UPDATE_STATUS', payload: { category: category, rank: taskRank } }); }
     const whichButton = () => {
         switch (status) {
-            case 'complete': return <Button leftIcon={<CheckIcon />} onClick={updateStatus} sx={taskStyle} />; break;
-            case 'waiting': return <Button leftIcon={<TimeIcon />} onClick={updateStatus} sx={taskStyle} />; break;
-            default: return <Button leftIcon={<HamburgerIcon />} onClick={updateStatus} sx={taskStyle} />; break;
+            case 'complete': return <Button leftIcon={<CheckIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
+            case 'waiting': return <Button leftIcon={<TimeIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
+            default: return <Button leftIcon={<HamburgerIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
         }
     }
 
-    return <Tr key={`${category}_${id}`} sx={taskStyle}>
-        <Td p={2} id={'task_' + id} className="taskButtons">
+    return <Tr key={`${category}_${id}`} sx={taskStyle} size={'xs'}>
+        <Td size={'xs'} id={'task_' + id} className="taskButtons">
             <ButtonGroup size='sm' isAttached>
-                <Button leftIcon={<ArrowUpIcon />} onClick={rankUp} isDisabled={props.isFirst} sx={taskStyle} />
-                <Button leftIcon={<ArrowDownIcon />} onClick={rankDn} isDisabled={props.isLast} sx={taskStyle} />
+                <Button leftIcon={<ArrowUpIcon />} onClick={rankUp} isDisabled={props.isFirst} sx={taskStyle} size={'xs'} />
+                <Button leftIcon={<ArrowDownIcon />} onClick={rankDn} isDisabled={props.isLast} sx={taskStyle} size={'xs'} />
                 {whichButton()}
             </ButtonGroup>
         </Td>
-        <Td>{taskRank + ". " + task.displayText}</Td>
+        <Td  size={'xs'}>{taskRank + ". " + task.displayText}</Td>
     </Tr>
 }
