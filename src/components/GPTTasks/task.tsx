@@ -6,6 +6,7 @@ enum Category {
   focus = 'focus',
   then = 'then',
   completedToday = 'completedToday',
+  archive = 'archive',
   // Add more categories as needed
 }
 
