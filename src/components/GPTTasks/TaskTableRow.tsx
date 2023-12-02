@@ -1,5 +1,5 @@
-import { ArrowUpIcon, ArrowDownIcon, CheckIcon, HamburgerIcon, TimeIcon } from "@chakra-ui/icons";
-import { Tr, Td, ButtonGroup, Button, SystemStyleObject } from "@chakra-ui/react";
+import { ArrowUpIcon, ArrowDownIcon, CheckIcon, HamburgerIcon, TimeIcon, SmallAddIcon } from "@chakra-ui/icons";
+import { Tr, Td, ButtonGroup, Button, SystemStyleObject, Editable, EditableInput, EditablePreview } from "@chakra-ui/react";
 import { task } from "./task";
 import { Action } from "./todoSlice";
 import { Dispatch } from "react";
@@ -10,6 +10,7 @@ export default function TaskTableRow(props: { task: task, taskRank: number, task
 
     const taskRank = props.taskRank;
     const taskStyle = props.taskStyle;
+    const buttonStyle = { ...taskStyle  }
     const dispatch = props.dispatch;
     // ---------------------------------------------
     // <><> Ranking functions
@@ -23,20 +24,28 @@ export default function TaskTableRow(props: { task: task, taskRank: number, task
     const updateStatus = () => { dispatch({ type: 'UPDATE_STATUS', payload: { category: category, rank: taskRank } }); }
     const whichButton = () => {
         switch (status) {
-            case 'complete': return <Button leftIcon={<CheckIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
-            case 'waiting': return <Button leftIcon={<TimeIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
-            default: return <Button leftIcon={<HamburgerIcon />} onClick={updateStatus} sx={taskStyle} size={'xs'} />; break;
+            case 'complete': return <Button variant={'ghost'} leftIcon={<CheckIcon />} onClick={updateStatus} sx={buttonStyle} size={'xs'} />; break;
+            case 'waiting': return <Button variant={'ghost'} leftIcon={<TimeIcon />} onClick={updateStatus} sx={buttonStyle} size={'xs'} />; break;
+            default: return <Button variant={'ghost'} leftIcon={<HamburgerIcon />} onClick={updateStatus} sx={buttonStyle} size={'xs'} />; break;
         }
     }
 
-    return <Tr key={`${category}_${id}`} sx={taskStyle} size={'xs'}>
-        <Td size={'xs'} id={'task_' + id} className="taskButtons">
-            <ButtonGroup size='sm' isAttached>
-                <Button leftIcon={<ArrowUpIcon />} onClick={rankUp} isDisabled={props.isFirst} sx={taskStyle} size={'xs'} />
-                <Button leftIcon={<ArrowDownIcon />} onClick={rankDn} isDisabled={props.isLast} sx={taskStyle} size={'xs'} />
+    return <Tr key={`${category}_${id}`} sx={buttonStyle}>
+        <Td id={'task_' + id} className="taskButtons" w={'min-content'}>
+            <ButtonGroup size='sm'>
+                <Button variant={'ghost'} leftIcon={<ArrowUpIcon />} onClick={rankUp} isDisabled={props.isFirst} sx={buttonStyle} size={'xs'} />
+                <Button variant={'ghost'} leftIcon={<ArrowDownIcon />} onClick={rankDn} isDisabled={props.isLast} sx={buttonStyle} size={'xs'} />
+            </ButtonGroup>
+            <ButtonGroup size='sm'>
+                <Button variant={'ghost'} leftIcon={<SmallAddIcon />} sx={taskStyle} size={'xs'} />
                 {whichButton()}
             </ButtonGroup>
         </Td>
-        <Td  size={'xs'}>{taskRank + ". " + task.displayText}</Td>
+        <Td>
+            <Editable defaultValue={task.displayText}>
+                <EditablePreview />
+                <EditableInput />
+            </Editable>
+        </Td>
     </Tr>
 }
