@@ -25,6 +25,19 @@ function nextStatus(currentStatus: status): status {
 export default function taskReducer(taskState: stateType = groupedTasks, action: AnyAction): stateType {
     // Action types
     switch (action.type) {
+        case 'CREATE_SUBTASK': {
+            // Creating a new subtask under the parent, provided its category and rank
+            const { category, parentRank, displayText } = action.payload as { category: category, parentRank: number, displayText: string };
+            const newID = nanoid();
+            const categoryTasks = taskState.get(category) as task[]
+            const parentToUpdate = categoryTasks[parentRank];
+            const newSubtask: task = { id: newID, displayText, status: 'inProgress', category };
+            parentToUpdate.subtasks?.push(newSubtask);
+            const updatedTasks = new Map(taskState);
+            categoryTasks[parentRank] = parentToUpdate;
+            updatedTasks.set(category, [...categoryTasks, parentToUpdate]);
+            return updatedTasks;
+        }
         case 'ADD_TASK': {
             // Creating a new task with the provided text and category
             const { category, displayText } = action.payload as { category: category, displayText: string };
