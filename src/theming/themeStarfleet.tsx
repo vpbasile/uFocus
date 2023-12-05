@@ -7,10 +7,17 @@ const colorModeConfig: ThemeConfig = {
 }
 
 // extend the theme
-const starfleetTheme = extendTheme({ // Specifics
+const uFocusTheme = extendTheme({
+    styles: {
+        global: (props:{colorMode:string}) => ({
+            body: {
+                bg: props.colorMode === "dark" ? "gray.800" : "gray.300",
+            },
+        }),
+    },
     fonts: {
         heading: `'Okuda', monospace`,
-        body: `'Sometype Mono', monospace`,
+        body: `'SandBoxBodyFont', monospace`,
     }
     , colors: {
         starfleet: {
@@ -27,4 +34,4 @@ const starfleetTheme = extendTheme({ // Specifics
     , colorModeConfig
 )
 
-export default starfleetTheme
+export default uFocusTheme

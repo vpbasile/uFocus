@@ -5,7 +5,7 @@ import { category, listCategory, stateType, task } from './task';
 import TaskTable from './TaskTable';
 import { groupedTasks } from './task-spoof';
 import { useReducer, useState } from 'react';
-import taskReducer, { Action } from './todoSlice';
+import taskReducer, { Action } from './todoReducer';
 
 
 export default function GroupedCategory() {
@@ -40,7 +40,7 @@ export default function GroupedCategory() {
     // ---------------------------------------------
     return (<>
         <Box display={{ md: 'flex' }}>
-            <Box id='taskList' p={9} flex={1}>
+            <Box id='taskList' p={{ base: 1, sm: 9 }} flex={1}>
                 <Heading as={'h2'} sx={collapsedStyle}>view: grouped-category</Heading>
                 <Accordion defaultIndex={[0]}>
                     {listCategory.map((eachCategory) => {

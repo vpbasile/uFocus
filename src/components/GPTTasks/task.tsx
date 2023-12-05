@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { Action } from "./todoSlice";
+import { Action } from "./todoReducer";
 
 // Define the 'category' enum
 enum Category {
@@ -24,8 +24,11 @@ export type status = keyof typeof Status;
 export const listStatus: status[] = Object.keys(Status) as status[];
 
 export type task = {
-  id: string, displayText: string, url?: URL, status: status, subtasks?: task[], category: category
+  id: string, displayText: string, url?: URL, status: status, subTasks?: task[], category: category
 }
 
 export type stateType = Map<category, task[]>
 export type dispatchType = Dispatch<Action>
+
+export type taskCoordinate = { category: category, taskRank: number}
+export type subTaskCoordinate = { category: category, taskRank: number, subTaskRank: number }

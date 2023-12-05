@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/layout'
 import { Provider } from 'react-redux'
-import { store } from './components/GPTTasks/todoSlice'
+import { store } from './components/GPTTasks/todoReducer'
 import GroupedCategory from './components/GPTTasks/GroupedCategory'
 import Notes from './components/Notes'
 import { myRouteDef } from './components/typeRoute'

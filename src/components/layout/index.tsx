@@ -7,8 +7,8 @@ import { myRouteDef } from '../typeRoute'
 export default function Layout(props: { routesList: myRouteDef[] }) {
     const routesList = props.routesList;
     return (<>
-        <SandboxHeader routesList={routesList}/>
-        <Box id='mainBody' p={9}>
+        <SandboxHeader routesList={routesList} />
+        <Box id='mainBody' p={{ base: 1, sm: 9 }}>
             {/* This is where the children will be rendered */}
             <Outlet />
         </Box>
